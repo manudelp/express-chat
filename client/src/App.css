@@ -25,11 +25,22 @@ body {
   padding: 16px;
 }
 
-.chat-header {
-  text-align: center;
+.chat-title {
   font-size: 24px;
-  margin-bottom: 16px;
   color: #333;
+  margin-bottom: 16px;
+}
+
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.chat-chat {
+  display: flex;
+  flex-direction: column;
 }
 
 .chat-messages {
@@ -68,7 +79,9 @@ body {
 .chat-form input {
   flex: 1;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
+  background-color: #fafafa;
+  color: #333;
   border-radius: 4px;
   font-size: 16px;
 }
@@ -85,4 +98,26 @@ body {
 
 .chat-form button:hover {
   background: #004d40;
+}
+
+.footer {
+  position: fixed;
+}
+
+@media (max-width: 768px) {
+  .chat-container {
+    width: 100%;
+    height: 100dvh;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0;
+  }
+
+  .chat-chat {
+    height: 75%;
+  }
+
+  .chat-messages {
+    height: 100%;
+  }
 }

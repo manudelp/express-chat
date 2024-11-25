@@ -16,6 +16,7 @@ const App = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [username, setUsername] = useState("");
+  const [online, setOnline] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -29,9 +30,15 @@ const App = () => {
       setMessages((prevMessages) => [...prevMessages, msg]);
     });
 
+    // Listen for the online users count from the server
+    socket.on("online", (count: number) => {
+      setOnline(count);
+    });
+
     return () => {
       socket.off("welcome");
       socket.off("message");
+      socket.off("online");
     };
   }, []);
 
@@ -52,25 +59,43 @@ const App = () => {
 
   return (
     <div className="chat-container">
-      <h1 className="chat-header">Chat App</h1>
-      <p className="chat-username">You are: {username}</p>
-      <div className="chat-messages">
-        {messages.map((msg, index) => (
-          <div key={index} className="chat-message">
-            <strong>{msg.sender}:</strong> {msg.text}
-          </div>
-        ))}
-        <div ref={messagesEndRef} />
+      <h1 className="chat-title">
+        Chat App{" "}
+        <a
+          href="https://www.linkedin.com/in/manuel-delpino/"
+          style={{ fontSize: "50%" }}
+        >
+          by Manuel Delpino
+        </a>
+      </h1>
+      <div className="chat-header">
+        <p className="chat-username">
+          {socket.connected ? `You are: ${username}` : ""}
+        </p>
+        <p className="chat-username" title="Online users">
+          {online > 0 ? "🟢" : socket.connected ? "🔴" : "🛑"}
+          {socket.connected ? online : "Offline"}
+        </p>
       </div>
-      <form className="chat-form" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type a message"
-        />
-        <button type="submit">Send</button>
-      </form>
+      <div className="chat-chat">
+        <div className="chat-messages">
+          {messages.map((msg, index) => (
+            <div key={index} className="chat-message">
+              <strong>{msg.sender}:</strong> {msg.text}
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+        <form className="chat-form" onSubmit={handleSubmit}>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Type a message"
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </div>
   );
 };

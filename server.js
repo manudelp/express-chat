@@ -7,6 +7,8 @@ const socketIo = require("socket.io");
 const app = express();
 const server = http.createServer(app);
 
+const onlineUsers = [];
+
 const io = socketIo(server, {
   cors: {
     origin: process.env.VITE_APP_URL || "http://localhost:5173",
@@ -38,6 +40,12 @@ io.on("connection", (socket) => {
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
   const username = `User${Math.floor(Math.random() * 1000) + randomEmoji}`;
+
+  onlineUsers.push({ id: socket.id, username });
+
+  // Emit the updated user list to all clients
+  io.emit("online", onlineUsers.length);
+
   socket.emit("welcome", { username });
 
   // Listen for incoming messages
@@ -52,6 +60,13 @@ io.on("connection", (socket) => {
   // Handle disconnections
   socket.on("disconnect", () => {
     console.log("Client disconnected");
+
+    // Remove the user from the onlineUsers array
+    const index = onlineUsers.findIndex((user) => user.id === socket.id);
+    if (index !== -1) onlineUsers.splice(index, 1);
+
+    // Emit the updated user list to all clients
+    io.emit("online", onlineUsers.length);
   });
 });
 
