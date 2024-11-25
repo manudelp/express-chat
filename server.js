@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const http = require("http");
@@ -7,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: "http://localhost:5173", // Replace with your frontend's URL
+    origin: process.env.VITE_APP_URL || "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
@@ -18,11 +19,15 @@ app.get("/", (req, res) => {
   res.send("Chat app backend");
 });
 
+app.get("/health", (req, res) => {
+  res.send("Server is running");
+});
+
 // Handle socket connections
 io.on("connection", (socket) => {
   console.log("New client connected");
 
-  // Assign a random username to each client
+  // Assign a random username to each clien
   const emojis = ["😀", "😂", "😍", "😎", "😜", "🤔", "🙄", "😇", "🤩", "🥳"];
   const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
@@ -45,7 +50,7 @@ io.on("connection", (socket) => {
 });
 
 // Start the server
-const PORT = 5000; // Remove dotenv dependency
+const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
