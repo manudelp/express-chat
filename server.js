@@ -6,6 +6,7 @@ const socketIo = require("socket.io");
 
 const app = express();
 const server = http.createServer(app);
+
 const io = socketIo(server, {
   cors: {
     origin: process.env.VITE_APP_URL || "http://localhost:5173",
@@ -19,6 +20,7 @@ app.use(
     methods: ["GET", "POST"],
   })
 );
+
 app.get("/", (req, res) => {
   res.send("Chat app backend");
 });
