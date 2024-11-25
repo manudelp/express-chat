@@ -3,7 +3,9 @@ import io from "socket.io-client";
 import "./App.css";
 
 // Access the socket URL from the environment variable
-const socket = io(process.env.REACT_APP_SOCKET_URL || "http://localhost:5000");
+const socket = io(
+  import.meta.env.VITE_APP_SOCKET_URL || "http://localhost:5000"
+);
 
 interface Message {
   sender: string;

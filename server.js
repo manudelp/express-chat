@@ -13,8 +13,15 @@ const io = socketIo(server, {
   },
 });
 
-app.use(cors());
-
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // Allow local development
+      "https://chat-manudelp.vercel.app", // Allow deployed frontend
+    ],
+    methods: ["GET", "POST"],
+  })
+);
 app.get("/", (req, res) => {
   res.send("Chat app backend");
 });
