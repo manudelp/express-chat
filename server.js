@@ -15,10 +15,7 @@ const io = socketIo(server, {
 
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173", // Allow local development
-      "https://chat-manudelp.vercel.app", // Allow deployed frontend
-    ],
+    origin: [process.env.VITE_APP_URL || "http://localhost:5173"],
     methods: ["GET", "POST"],
   })
 );
